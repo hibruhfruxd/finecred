@@ -8,7 +8,7 @@ import { roleHome } from "@/frontend/lib/roles";
 export default async function LenderLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession();
   if (!session) redirect("/login");
-  if (session.role !== "lender") redirect(roleHome(session.role));
+  if (session.role !== "lender" && session.role !== "consumer") redirect(roleHome(session.role));
 
   return (
     <AuthProvider initialUser={session}>

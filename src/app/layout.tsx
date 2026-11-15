@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0F172A",
+  themeColor: "#08080A",
 };
 
 const themeScript = `
@@ -35,7 +35,7 @@ const themeScript = `
       var stored = localStorage.getItem('finance-credibility-theme');
       var theme = stored === 'light' || stored === 'dark'
         ? stored
-        : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        : 'dark';
       document.documentElement.dataset.theme = theme;
       document.documentElement.style.colorScheme = theme;
     } catch (error) {}

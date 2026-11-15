@@ -1,8 +1,2 @@
-import type { Metadata } from "next";
-import { ConsumerHelpPage } from "@/frontend/components/finance/ConsumerPages";
-
-export const metadata: Metadata = { title: "Help & support" };
-
-export default function Page() {
-  return <ConsumerHelpPage />;
-}
+import { redirect } from "next/navigation";
+export default function Page() { redirect("/"); }

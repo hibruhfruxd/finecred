@@ -2,340 +2,135 @@
 
 import {
   BarChart3,
-  Bell,
-  BookOpen,
   Building2,
-  ChevronDown,
-  ClipboardCheck,
   CreditCard,
   Database,
-  FileBarChart,
   FileText,
   Gauge,
-  HelpCircle,
   LayoutDashboard,
-  ListChecks,
-  Loader2,
-  LogOut,
   Menu,
-  PlusCircle,
   ReceiptText,
   Settings,
   ShieldCheck,
-  Sparkles,
-  User,
   Users,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/frontend/providers/AuthProvider";
-import { useDemoData, SYNTHETIC_BANNER } from "@/frontend/lib/demo-data";
-import { ROLE_LABELS, type DemoRole } from "@/models/demo-accounts";
-import { Avatar } from "@/frontend/components/finance/ui";
-import { FcLogo, ThemeButton } from "@/frontend/components/finance/PublicShell";
+import { FcLogo } from "@/frontend/components/finance/PublicShell";
+import type { DemoRole } from "@/models/demo-accounts";
 
 interface NavItem {
   href: string;
   label: string;
-  icon: typeof LayoutDashboard;
-  exact?: boolean;
+  icon: LucideIcon;
 }
 
-const CONSUMER_NAV: { label: string; items: NavItem[] }[] = [
-  {
-    label: "Workspace",
-    items: [
-      { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
-      { href: "/payments", label: "My Payments", icon: ReceiptText },
-      { href: "/payments/new", label: "Add Payment", icon: PlusCircle, exact: true },
-      { href: "/score", label: "Credibility Score", icon: Gauge },
-      { href: "/analytics", label: "Analytics", icon: BarChart3 },
-      { href: "/insights", label: "Financial Insights", icon: Sparkles },
-      { href: "/reports", label: "Reports", icon: FileBarChart },
-      { href: "/notifications", label: "Notifications", icon: Bell },
-    ],
-  },
-  {
-    label: "Account",
-    items: [
-      { href: "/consent", label: "Consent & Privacy", icon: ShieldCheck },
-      { href: "/profile", label: "Profile", icon: User },
-      { href: "/settings", label: "Settings", icon: Settings },
-      { href: "/help", label: "Help & Support", icon: HelpCircle },
-    ],
-  },
+const CONSUMER_NAV: NavItem[] = [
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/payments", label: "My payments", icon: ReceiptText },
+  { href: "/score", label: "Credibility score", icon: Gauge },
+  { href: "/lender", label: "Lender workspace", icon: Building2 },
+  { href: "/", label: "Public site", icon: BarChart3 },
 ];
 
-const LENDER_NAV: { label: string; items: NavItem[] }[] = [
-  {
-    label: "Workspace",
-    items: [
-      { href: "/lender/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
-      { href: "/lender/applicants", label: "Applicants", icon: Users },
-      { href: "/lender/assessments", label: "Assessments", icon: ClipboardCheck },
-      { href: "/lender/reports", label: "Reports", icon: FileBarChart },
-      { href: "/lender/api", label: "API Documentation", icon: BookOpen },
-      { href: "/lender/settings", label: "Settings", icon: Settings },
-    ],
-  },
+const LENDER_NAV: NavItem[] = [
+  { href: "/lender", label: "Applicants", icon: LayoutDashboard },
+  { href: "/lender/reports", label: "Reports", icon: FileText },
+  { href: "/lender#access-policy", label: "Access policy", icon: ShieldCheck },
+  { href: "/", label: "Public site", icon: Building2 },
 ];
 
-const ADMIN_NAV: { label: string; items: NavItem[] }[] = [
-  {
-    label: "Administration",
-    items: [
-      { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
-      { href: "/admin/users", label: "Users", icon: Users },
-      { href: "/admin/lenders", label: "Lender Organizations", icon: Building2 },
-      { href: "/admin/payments", label: "Payment Records", icon: CreditCard },
-      { href: "/admin/scoring", label: "Scoring Engine", icon: Gauge },
-      { href: "/admin/synthetic-data", label: "Synthetic Data", icon: Database },
-      { href: "/admin/reports", label: "Reports", icon: FileBarChart },
-      { href: "/admin/consents", label: "Consent Records", icon: ShieldCheck },
-      { href: "/admin/audit-logs", label: "Audit Logs", icon: ListChecks },
-      { href: "/admin/settings", label: "System Settings", icon: Settings },
-    ],
-  },
+const ADMIN_NAV: NavItem[] = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/lenders", label: "Lender organizations", icon: Building2 },
+  { href: "/admin/payments", label: "Payment records", icon: CreditCard },
+  { href: "/admin/scoring", label: "Scoring engine", icon: Gauge },
+  { href: "/admin/synthetic-data", label: "Synthetic data", icon: Database },
+  { href: "/admin/reports", label: "Reports", icon: FileText },
+  { href: "/admin/consents", label: "Consent records", icon: ShieldCheck },
+  { href: "/admin/audit-logs", label: "Audit logs", icon: FileText },
+  { href: "/admin/settings", label: "System settings", icon: Settings },
 ];
 
-const MOBILE_ITEMS: Record<DemoRole, NavItem[]> = {
-  consumer: [
-    { href: "/dashboard", label: "Home", icon: LayoutDashboard, exact: true },
-    { href: "/payments", label: "Payments", icon: ReceiptText },
-    { href: "/score", label: "Score", icon: Gauge },
-    { href: "/profile", label: "Profile", icon: User },
-  ],
-  lender: [
-    { href: "/lender/dashboard", label: "Home", icon: LayoutDashboard, exact: true },
-    { href: "/lender/applicants", label: "Applicants", icon: Users },
-    { href: "/lender/assessments", label: "Assessments", icon: ClipboardCheck },
-    { href: "/lender/settings", label: "Settings", icon: Settings },
-  ],
-  admin: [
-    { href: "/admin/dashboard", label: "Home", icon: LayoutDashboard, exact: true },
-    { href: "/admin/users", label: "Users", icon: Users },
-    { href: "/admin/audit-logs", label: "Audit", icon: ListChecks },
-    { href: "/admin/settings", label: "Settings", icon: Settings },
-  ],
-};
-
-const ROLE_CONTEXT: Record<DemoRole, { workspace: string; tag: string }> = {
-  consumer: { workspace: "Consumer workspace", tag: "DEMO 01" },
-  lender: { workspace: "Demo Lender A", tag: "LENDER / DEMO" },
-  admin: { workspace: "Platform administration", tag: "ADMIN / DEMO" },
-};
-
-function isActive(pathname: string, item: NavItem) {
-  if (item.exact) return pathname === item.href;
-  if (item.href === "/payments") return pathname === "/payments" || pathname.startsWith("/payments/");
-  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+function activeFor(pathname: string, href: string) {
+  const base = href.split("#")[0];
+  if (base === "/" || base === "/lender" || base === "/admin" || base === "/dashboard") return pathname === base;
+  return pathname === base || pathname.startsWith(`${base}/`);
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { user, logout, loggingOut } = useAuth();
-  const { notifications } = useDemoData();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [userOpen, setUserOpen] = useState(false);
-  const userRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const role = (user?.role as DemoRole | undefined) ?? "consumer";
+  const items = role === "lender" ? LENDER_NAV : role === "admin" ? ADMIN_NAV : CONSUMER_NAV;
+  const home = role === "lender" ? "/lender" : role === "admin" ? "/admin" : "/dashboard";
+  const workspace = role === "lender" ? "Demo Lender A · organization-scoped" : role === "admin" ? "Admin · server-side role checks" : "Synthetic workspace";
+  const routeLabel = pathname.split("/").filter(Boolean).join(" / ").replaceAll("-", " ").toUpperCase() || "OVERVIEW";
 
-  const role = (user?.role as DemoRole) || "consumer";
-  const nav = role === "lender" ? LENDER_NAV : role === "admin" ? ADMIN_NAV : CONSUMER_NAV;
-  const mobileItems = MOBILE_ITEMS[role];
-  const context = ROLE_CONTEXT[role];
-  const unread = notifications.filter((item) => !item.read).length;
-  const settingsHref = role === "consumer" ? "/settings" : role === "lender" ? "/lender/settings" : "/admin/settings";
-  const profileHref = role === "consumer" ? "/profile" : settingsHref;
-
-  const activeLabel =
-    nav.flatMap((group) => group.items).find((item) => isActive(pathname, item))?.label ??
-    "Finance Credibility";
-
-  useEffect(() => {
-    setMenuOpen(false);
-    setUserOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    function handle(event: MouseEvent) {
-      if (userRef.current && !userRef.current.contains(event.target as Node)) setUserOpen(false);
-    }
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, []);
+  useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <div className={`fc-shell fc-shell-${role}`}>
-      <a href="#main-content" className="fc-skip-link">
-        Skip to content
-      </a>
-      {menuOpen ? <div className="fc-sidebar-scrim" onClick={() => setMenuOpen(false)} /> : null}
-      <aside className={`fc-sidebar ${menuOpen ? "fc-sidebar-open" : ""}`} aria-label="Workspace sidebar">
-        <div className="fc-sidebar-brand">
-          <Link href={role === "consumer" ? "/dashboard" : role === "lender" ? "/lender/dashboard" : "/admin/dashboard"}>
+    <div className={`pdf-shell pdf-shell-${role}`}>
+      <a href="#main-content" className="pdf-skip-link">Skip to content</a>
+      <aside className={`pdf-sidebar ${open ? "open" : ""}`} aria-label="Workspace navigation">
+        <div className="pdf-sidebar-top">
+          <Link href={home} aria-label="Finance Credibility home">
             <FcLogo />
           </Link>
-          <button
-            type="button"
-            className="fc-icon-btn fc-sidebar-close"
-            onClick={() => setMenuOpen(false)}
-            aria-label="Close navigation"
-          >
+          <button type="button" className="pdf-icon-btn pdf-sidebar-close" onClick={() => setOpen(false)} aria-label="Close navigation">
             <X size={18} />
           </button>
         </div>
-        <div className="fc-workspace-chip">
-          <span className="fc-workspace-icon">
-            {role === "consumer" ? <ShieldCheck size={17} /> : role === "lender" ? <Building2 size={17} /> : <Settings size={17} />}
-          </span>
-          <div>
-            <strong>{context.workspace}</strong>
-            <span>Synthetic data only</span>
-          </div>
-          <span className="fc-workspace-tag">{context.tag}</span>
-        </div>
-        <nav className="fc-sidebar-nav" aria-label="Main navigation">
-          {nav.map((group) => (
-            <div className="fc-nav-group" key={group.label}>
-              <p className="fc-nav-label">{group.label}</p>
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(pathname, item);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`fc-nav-link ${active ? "active" : ""}`}
-                    aria-current={active ? "page" : undefined}
-                  >
-                    <Icon size={17} strokeWidth={1.9} />
-                    <span>{item.label}</span>
-                    {item.label === "Notifications" && unread > 0 ? (
-                      <span className="fc-nav-count">{unread}</span>
-                    ) : null}
-                  </Link>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-        <div className="fc-sidebar-bottom">
-          <div className="fc-sidebar-trust">
-            <ShieldCheck size={16} />
-            <div>
-              <strong>Experimental model</strong>
-              <span>FC-DEMO-1.0 · no bureau data</span>
-            </div>
-          </div>
-          <div className="fc-sidebar-user">
-            <Avatar name={user?.name ?? "Demo User"} size="sm" tone={role === "admin" ? "violet" : "blue"} />
-            <div>
-              <strong>{user?.name ?? "Demo User"}</strong>
-              <span>{ROLE_LABELS[role]}</span>
-            </div>
-            <button
-              type="button"
-              className="fc-icon-btn"
-              onClick={() => void logout()}
-              aria-label="Sign out"
-              title="Sign out"
-              disabled={loggingOut}
-            >
-              {loggingOut ? <Loader2 size={16} className="fc-spin" /> : <LogOut size={16} />}
-            </button>
-          </div>
-        </div>
-      </aside>
 
-      <div className="fc-main">
-        <header className="fc-topbar">
-          <div className="fc-topbar-left">
-            <button
-              type="button"
-              className="fc-icon-btn fc-mobile-toggle"
-              onClick={() => setMenuOpen(true)}
-              aria-label="Open navigation"
-            >
-              <Menu size={20} />
-            </button>
-            <div className="fc-topbar-context">
-              <span className="fc-topbar-eyebrow">{ROLE_LABELS[role]} / Demo</span>
-              <strong>{activeLabel}</strong>
-            </div>
-          </div>
-          <div className="fc-topbar-actions">
-            <span className="fc-topbar-status">
-              <span className="fc-status-dot" />
-              Synthetic workspace
-            </span>
-            <Link href={role === "consumer" ? "/notifications" : role === "lender" ? "/lender/dashboard" : "/admin/audit-logs"} className="fc-icon-btn fc-bell-btn" aria-label="Notifications">
-              <Bell size={18} />
-              {unread > 0 ? <span className="fc-bell-dot">{unread}</span> : null}
-            </Link>
-            <ThemeButton />
-            <div className="fc-user-menu-wrap" ref={userRef}>
-              <button
-                type="button"
-                className="fc-user-trigger"
-                onClick={() => setUserOpen((value) => !value)}
-                aria-expanded={userOpen}
-                aria-haspopup="menu"
-              >
-                <Avatar name={user?.name ?? "Demo User"} size="sm" tone={role === "admin" ? "violet" : "blue"} />
-                <span className="fc-user-trigger-text">
-                  <strong>{user?.name ?? "Demo User"}</strong>
-                  <span>{user?.email}</span>
-                </span>
-                <ChevronDown size={15} />
-              </button>
-              {userOpen ? (
-                <div className="fc-user-menu" role="menu">
-                  <div className="fc-user-menu-head">
-                    <strong>{user?.name ?? "Demo User"}</strong>
-                    <span>{ROLE_LABELS[role]} · {context.workspace}</span>
-                  </div>
-                  <Link href={profileHref} role="menuitem">
-                    <User size={16} /> Profile
-                  </Link>
-                  <Link href={settingsHref} role="menuitem">
-                    <Settings size={16} /> Settings
-                  </Link>
-                  <Link href={role === "consumer" ? "/help" : "/lender/api"} role="menuitem">
-                    <HelpCircle size={16} /> Help
-                  </Link>
-                  <button type="button" role="menuitem" onClick={() => void logout()} disabled={loggingOut}>
-                    {loggingOut ? <Loader2 size={16} className="fc-spin" /> : <LogOut size={16} />} Sign out
-                  </button>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </header>
-        <div className="fc-synthetic-strip fc-synthetic-strip-app">{SYNTHETIC_BANNER}</div>
-        <main id="main-content" className="fc-content">
-          {children}
-        </main>
-        <footer className="fc-app-footer">
-          <p>
-            <strong>Experimental prototype.</strong> All records and assessments are synthetic.
-            Not a bureau score, lending decision, or financial advice.
-          </p>
-          <span>FC-DEMO-1.0 · November 2026</span>
-        </footer>
-        <nav className="fc-bottom-nav" aria-label="Mobile navigation">
-          {mobileItems.map((item) => {
+        <nav className="pdf-nav" aria-label="Main navigation">
+          {items.map((item) => {
             const Icon = item.icon;
-            const active = isActive(pathname, item);
+            const active = activeFor(pathname, item.href);
             return (
-              <Link key={item.href} href={item.href} className={active ? "active" : ""} aria-current={active ? "page" : undefined}>
-                <Icon size={20} />
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`pdf-nav-link ${active ? "active" : ""}`}
+                aria-current={active ? "page" : undefined}
+              >
+                <Icon size={16} strokeWidth={1.8} />
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
+
+        <div className="pdf-sidebar-bottom">
+          <div className="pdf-sidebar-meta">
+            <strong>{workspace}</strong>
+            <span>Demo build · FC-DEMO-1.0</span>
+          </div>
+        </div>
+      </aside>
+
+      <div className="pdf-main">
+        <header className="pdf-route-bar">
+          <button type="button" className="pdf-icon-btn pdf-mobile-toggle" onClick={() => setOpen(true)} aria-label="Open navigation" style={{ display: "none", marginRight: "auto" }}>
+            <Menu size={19} />
+          </button>
+          <span>/ {routeLabel}</span>
+          <span className="pdf-route-pill">Synthetic data only</span>
+        </header>
+
+        <main id="main-content" className="pdf-content">
+          {children}
+        </main>
+
+        <footer className="pdf-footer-disclaimer" role="note">
+          <span className="dot" />
+          <span>Synthetic data only · Experimental assessment · Not a credit bureau score · No loan approval or default prediction.</span>
+        </footer>
       </div>
     </div>
   );

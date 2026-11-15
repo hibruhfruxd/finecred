@@ -1,5 +1,2 @@
 import { redirect } from "next/navigation";
-
-export default function Page() {
-  redirect("/payments");
-}
+export default function Page() { redirect("/payments"); }
