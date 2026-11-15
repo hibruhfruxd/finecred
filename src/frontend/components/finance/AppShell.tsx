@@ -113,10 +113,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </aside>
+      {open ? <button type="button" className="pdf-scrim" onClick={() => setOpen(false)} aria-label="Close navigation" /> : null}
 
       <div className="pdf-main">
         <header className="pdf-route-bar">
-          <button type="button" className="pdf-icon-btn pdf-mobile-toggle" onClick={() => setOpen(true)} aria-label="Open navigation" style={{ display: "none", marginRight: "auto" }}>
+          <button type="button" className="pdf-icon-btn pdf-mobile-toggle" onClick={() => setOpen(true)} aria-label="Open navigation" style={{ marginRight: "auto" }}>
             <Menu size={19} />
           </button>
           <span>/ {routeLabel}</span>

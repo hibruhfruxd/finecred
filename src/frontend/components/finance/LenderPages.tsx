@@ -51,7 +51,7 @@ export function LenderDashboardPage() {
         <section className="pdf-card pdf-card-lg" id="reports">
           <div className="pdf-card-title-row"><h2>Applicant detail · Demo Consumer 001</h2><button className="pdf-btn pdf-btn-secondary pdf-btn-sm">Authorized report export</button></div>
           <p className="pdf-small">Latest assessment · 11 Nov 2026</p>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(180px, 0.45fr) 1fr", gap: 22, alignItems: "center", marginTop: 10 }}>
+          <div className="pdf-lender-detail-grid" style={{ marginTop: 10 }}>
             <div><div className="pdf-score-number" style={{ fontSize: "4.5rem" }}>782 <small style={{ fontSize: "0.25em", color: "var(--muted)" }}>/ 900</small></div><p className="pdf-small" style={{ marginTop: 12 }}>Score history Jun → Nov</p><div className="pdf-bars">{[42, 54, 60, 64, 64, 78].map((height, index) => <div key={index} className="pdf-bar" style={{ height: `${height}%` }} />)}</div><div className="pdf-bar-labels"><span>741</span><span>758</span><span>764</span><span>770</span><span>770</span><span>782</span></div></div>
             <div>{[["Punctuality", 94], ["Consistency", 92], ["Obligation management", 95]].map(([label, value]) => <div className="pdf-progress-row" key={label as string}><div className="pdf-progress-head"><span>{label}</span><strong>{value}/100</strong></div><div className="pdf-progress-track"><div className="pdf-progress-fill" style={{ width: `${value}%` }} /></div></div>)}</div>
           </div>

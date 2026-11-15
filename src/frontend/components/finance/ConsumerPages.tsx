@@ -168,7 +168,7 @@ export function ConsumerScorePage() {
         <div style={{ display: "grid", gap: 14 }}>
           <section className="pdf-score-hero">
             <div className="pdf-score-hero-top"><span>Illustrative credibility assessment</span><span className="pdf-pill pdf-pill-info">FC-DEMO-1.0</span></div>
-            <div style={{ display: "grid", gridTemplateColumns: "170px 1fr", alignItems: "center", gap: 22 }}>
+            <div className="pdf-score-hero-grid">
               <svg viewBox="0 0 120 120" width="160" height="160" aria-label="782 out of 900"><circle cx="60" cy="60" r="48" stroke="#24242c" strokeWidth="13" fill="none" /><circle cx="60" cy="60" r="48" stroke="#4f7cff" strokeWidth="13" fill="none" strokeDasharray="302" strokeDashoffset="79" strokeLinecap="round" transform="rotate(-90 60 60)" /></svg>
               <div><div className="pdf-score-number">782</div><p style={{ color: "#b8bdcc", marginTop: 8 }}>out of 900 · range 300–900</p><span className="pdf-pill pdf-pill-success" style={{ marginTop: 12 }}><span className="pdf-pill-dot" />+12 vs previous assessment</span></div>
             </div>
@@ -199,7 +199,7 @@ export function ConsumerConsentPage() {
       <div className="pdf-consent-grid">
         {[["Assessment processing", "Enabled", "Consent recorded. FC processes your demo payment records to produce the illustrative assessment."], ["Lender sharing", "Authorized", "Demo Lender A · authorized. They can view your latest assessment and report. Every view is logged."]].map(([title, status, copy]) => <section className="pdf-card pdf-card-lg" key={title}><div className="pdf-card-title-row"><h2>{title}</h2><span className="pdf-pill pdf-pill-success"><span className="pdf-pill-dot" />{status}</span></div><p>{copy}</p><div style={{ display: "flex", gap: 8, marginTop: 22 }}><button className="pdf-btn pdf-btn-secondary">Review</button><button className="pdf-btn pdf-btn-danger">Withdraw</button></div></section>)}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(300px, 0.7fr)", gap: 14, marginTop: 14 }}>
+      <div className="pdf-consent-layout" style={{ marginTop: 14 }}>
         <div style={{ display: "grid", gap: 14 }}>
           <section className="pdf-card"><h2>Consent history</h2><div className="pdf-table-wrap" style={{ marginTop: 12 }}><table className="pdf-table"><thead><tr><th>Purpose</th><th>Policy version</th><th>Timestamp (UTC)</th><th>Status</th></tr></thead><tbody>{[["Assessment processing", "v1.0", "2026-11-01 09:12", "Granted"], ["Lender sharing · Demo Lender A", "v1.0", "2026-11-03 14:40", "Granted"], ["Lender sharing · Demo Lender B", "v1.0", "2026-10-12 07:25", "Revoked"]].map((row) => <tr key={row.join("-")}><td>{row[0]}</td><td>{row[1]}</td><td className="pdf-mono">{row[2]}</td><td><span className={`pdf-pill ${row[3] === "Granted" ? "pdf-pill-success" : "pdf-pill-danger"}`}><span className="pdf-pill-dot" />{row[3]}</span></td></tr>)}</tbody></table></div></section>
           <section className="pdf-card"><h2>Recent access events</h2>{[["Demo Lender A viewed your assessment", "2026-11-11 10:04 UTC"], ["Report exported by Demo Lender A", "2026-11-11 10:06 UTC"]].map(([event, time]) => <div key={event} style={{ display: "flex", justifyContent: "space-between", gap: 18, borderTop: "1px solid var(--line)", padding: "13px 0" }}><span>{event}</span><time className="pdf-mono pdf-small">{time}</time></div>)}<p className="pdf-small">You can see every time your assessment is viewed.</p></section>

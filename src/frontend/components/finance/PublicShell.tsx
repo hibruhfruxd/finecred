@@ -80,7 +80,6 @@ export function PublicShell({ children }: { children: ReactNode }) {
               aria-expanded={open}
               aria-controls="public-mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
-              style={{ display: "none" }}
             >
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>

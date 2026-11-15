@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { ClientApiError, apiRequest } from "@/frontend/lib/api";
 import { roleHome } from "@/frontend/lib/roles";
 import { FcLogo } from "@/frontend/components/finance/PublicShell";
+import { DEMO_ACCOUNTS, ROLE_LABELS, type DemoRole } from "@/models/demo-accounts";
 import { loginSchema } from "@/models/validation/auth";
 import type { LoginResponseDto } from "@/models/api";
 
@@ -16,19 +17,13 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function signIn(nextEmail: string, nextPassword: string) {
     setError("");
-    const validation = loginSchema.safeParse({ email, password });
-    if (!validation.success) {
-      setError("We couldn't sign you in with those details. Please try again.");
-      return;
-    }
     setSubmitting(true);
     try {
       const result = await apiRequest<LoginResponseDto>("/api/auth/login", {
         method: "POST",
-        body: JSON.stringify(validation.data),
+        body: JSON.stringify({ email: nextEmail, password: nextPassword }),
       });
       router.replace(roleHome(result.user.role));
       router.refresh();
@@ -39,6 +34,24 @@ export function LoginForm() {
         setError("This account has been disabled. Please contact the workspace administrator.");
       }
     }
+  }
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const validation = loginSchema.safeParse({ email, password });
+    if (!validation.success) {
+      setError("We couldn't sign you in with those details. Please try again.");
+      return;
+    }
+    await signIn(validation.data.email, validation.data.password);
+  }
+
+  async function quickLogin(role: DemoRole) {
+    const account = DEMO_ACCOUNTS.find((item) => item.role === role);
+    if (!account) return;
+    setEmail(account.email);
+    setPassword(account.password);
+    await signIn(account.email, account.password);
   }
 
   return (
@@ -55,6 +68,16 @@ export function LoginForm() {
       </label>
       {error ? <div className="pdf-alert pdf-alert-danger" role="alert"><span><strong>{error}</strong></span></div> : null}
       <button className="pdf-btn pdf-btn-primary" style={{ width: "100%", minHeight: 48 }} type="submit" disabled={submitting}>{submitting ? "Signing in…" : "Sign in"}</button>
+      <div className="pdf-quick-login" aria-label="One-click demo login">
+        <span className="pdf-quick-login-label">One-click demo login</span>
+        <div className="pdf-quick-login-actions">
+          {(["consumer", "lender", "admin"] as DemoRole[]).map((role) => (
+            <button type="button" key={role} onClick={() => void quickLogin(role)} disabled={submitting}>
+              {ROLE_LABELS[role]}
+            </button>
+          ))}
+        </div>
+      </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
         <Link className="pdf-auth-link" href="/forgot-password">Forgot password</Link>
         <span className="pdf-small">New here? <Link className="pdf-auth-link" href="/register">Register</Link></span>
