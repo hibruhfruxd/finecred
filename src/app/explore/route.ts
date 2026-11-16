@@ -1,37 +1,27 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
-import { ApiError, parseWithSchema, readJsonBody, withApiHandler } from "@/backend/http/errors";
 import { hashPassword } from "@/backend/auth/password";
 import { SESSION_MAX_AGE_SECONDS, createSessionToken } from "@/backend/auth/token";
 import { setSessionCookies } from "@/backend/auth/cookies";
 import { getAuthRequestContext, issueRefreshToken } from "@/backend/auth/refresh";
-import {
-  createUser,
-  findUserByEmail,
-  toPublicUser,
-} from "@/backend/db/repository";
-import { quickLoginSchema } from "@/models/validation/auth";
+import { createUser, findUserByEmail } from "@/backend/db/repository";
+import { DEMO_ACCOUNTS } from "@/models/demo-accounts";
 
-export async function POST(request: Request): Promise<Response> {
-  return withApiHandler(async () => {
-    const input = parseWithSchema(
-      quickLoginSchema,
-      await readJsonBody(request),
-      "Enter your name and a valid email address.",
-    );
+export const dynamic = "force-dynamic";
 
-    let user = await findUserByEmail(input.email);
+export async function GET(request: Request): Promise<Response> {
+  const demo = DEMO_ACCOUNTS.find((account) => account.role === "consumer");
+  try {
+    if (!demo) throw new Error("Demo consumer account is not configured.");
+
+    let user = await findUserByEmail(demo.email);
     if (!user) {
       user = await createUser({
-        email: input.email,
-        fullName: input.name,
+        email: demo.email,
+        fullName: demo.fullName,
         passwordHash: hashPassword(randomBytes(32).toString("hex")),
         role: "consumer",
       });
-    }
-
-    if (user.status !== "active") {
-      throw new ApiError(403, "account_disabled", "This account has been disabled.");
     }
 
     const accessToken = await createSessionToken({
@@ -43,15 +33,15 @@ export async function POST(request: Request): Promise<Response> {
     });
     const refresh = await issueRefreshToken(user.id, getAuthRequestContext(request));
 
-    const response = NextResponse.json({
-      user: toPublicUser(user),
-      expiresIn: SESSION_MAX_AGE_SECONDS,
-    });
+    const response = NextResponse.redirect(new URL("/dashboard", request.url), 307);
     setSessionCookies(response, {
       accessToken,
       refreshToken: refresh.rawToken,
     });
     response.headers.set("Cache-Control", "no-store");
     return response;
-  });
+  } catch (error) {
+    console.error("[fincred-explore] Automatic demo sign-in failed:", error);
+    return NextResponse.redirect(new URL("/login", request.url), 307);
+  }
 }

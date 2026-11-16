@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import type { ReactNode } from "react";
-import { HomeQuickLogin } from "@/frontend/components/finance/HomeQuickLogin";
 
 function PublicArticle({ eyebrow, title, children }: { eyebrow: string; title: string; children: ReactNode }) {
   return (
@@ -27,8 +27,11 @@ export function LandingPage() {
           <p className="pdf-hero-copy">
             Finance Credibility turns everyday payment consistency — rent, utilities, insurance — into a transparent, explainable picture that you control and choose to share.
           </p>
-          <HomeQuickLogin />
-          <p className="pdf-hero-note">No password needed — enter your name and email to explore the demo.</p>
+          <div className="pdf-hero-actions">
+            <Link href="/explore" className="pdf-btn pdf-btn-primary pdf-btn-lg">Explore dashboard</Link>
+            <Link href="#how-it-works" className="pdf-btn pdf-btn-secondary pdf-btn-lg">See how it works</Link>
+          </div>
+          <p className="pdf-hero-note">No real accounts. No identity documents. Demo records only.</p>
         </div>
 
         <div className="pdf-illustrative-card" aria-label="Illustrative financial credibility preview">
