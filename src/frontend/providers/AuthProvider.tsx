@@ -38,7 +38,7 @@ export function AuthProvider({
     } finally {
       setUser(null);
       setLoggingOut(false);
-      router.replace("/login");
+      router.replace("/");
       router.refresh();
     }
   }, [router]);
@@ -46,7 +46,7 @@ export function AuthProvider({
   useEffect(() => {
     const handleUnauthorized = () => {
       setUser(null);
-      router.replace("/login");
+      router.replace("/dashboard");
     };
     window.addEventListener("fincred:unauthorized", handleUnauthorized);
     return () => window.removeEventListener("fincred:unauthorized", handleUnauthorized);

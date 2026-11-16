@@ -36,7 +36,7 @@ export function StatesPage() {
 
         <StateCard label="Expired session">
           <div className="pdf-alert pdf-alert-warning"><TriangleAlert size={18} /><span><strong>Your session has expired.</strong> Sign in again — your entries on this page are kept.</span></div>
-          <Link href="/login" className="pdf-btn pdf-btn-primary" style={{ marginTop: 14 }}>Sign in</Link>
+          <Link href="/dashboard" className="pdf-btn pdf-btn-primary" style={{ marginTop: 14 }}>Back to dashboard</Link>
         </StateCard>
 
         <StateCard label="Forbidden / no access">

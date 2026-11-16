@@ -1,9 +1,10 @@
 import { ApiError } from "@/backend/http/errors";
 import { findUserById } from "@/backend/db/repository";
+import { getOrCreateDemoUser } from "@/backend/auth/demo-user";
 import type { UserRecord } from "@/models/db";
 import { getSessionTokenFromRequest, verifySessionToken } from "./token";
 
-export async function requireUser(request: Request): Promise<UserRecord> {
+export async function requireSessionUser(request: Request): Promise<UserRecord> {
   const token = getSessionTokenFromRequest(request);
   if (!token) {
     throw new ApiError(401, "unauthenticated", "Please sign in to continue.");
@@ -38,4 +39,15 @@ export async function requireUser(request: Request): Promise<UserRecord> {
     authVersion: user.authVersion,
     createdAt: user.createdAt,
   };
+}
+
+export async function requireUser(request: Request): Promise<UserRecord> {
+  try {
+    return await requireSessionUser(request);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) {
+      return getOrCreateDemoUser("consumer");
+    }
+    throw error;
+  }
 }

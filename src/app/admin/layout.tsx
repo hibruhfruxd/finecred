@@ -1,14 +1,10 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "@/backend/auth/server-session";
 import { AppShell } from "@/frontend/components/finance/AppShell";
 import { AuthProvider } from "@/frontend/providers/AuthProvider";
 import { DemoDataProvider } from "@/frontend/lib/demo-data";
-import { roleHome } from "@/frontend/lib/roles";
+import { getDemoSessionUser } from "@/frontend/lib/demo-session";
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession();
-  if (!session) redirect("/login");
-  if (session.role !== "admin") redirect(roleHome(session.role));
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = getDemoSessionUser("admin");
 
   return (
     <AuthProvider initialUser={session}>

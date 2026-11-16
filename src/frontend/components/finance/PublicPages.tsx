@@ -28,7 +28,7 @@ export function LandingPage() {
             Finance Credibility turns everyday payment consistency — rent, utilities, insurance — into a transparent, explainable picture that you control and choose to share.
           </p>
           <div className="pdf-hero-actions">
-            <Link href="/explore" className="pdf-btn pdf-btn-primary pdf-btn-lg">Explore dashboard</Link>
+            <Link href="/dashboard" className="pdf-btn pdf-btn-primary pdf-btn-lg">Explore dashboard</Link>
             <Link href="#how-it-works" className="pdf-btn pdf-btn-secondary pdf-btn-lg">See how it works</Link>
           </div>
           <p className="pdf-hero-note">No real accounts. No identity documents. Demo records only.</p>
