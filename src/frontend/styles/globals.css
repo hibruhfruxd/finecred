@@ -376,6 +376,10 @@ img, svg { display: block; max-width: 100%; }
 .pdf-hero-copy { max-width: 505px; color: #a7a7b1; font-size: 16px; line-height: 1.55; }
 .pdf-hero-actions { display: flex; gap: 12px; margin: 24px 0 12px; }
 .pdf-hero-note { color: #73737f; font-size: 11px; }
+.pdf-hero-login { max-width: 480px; }
+.pdf-hero-login-fields { display: grid; grid-template-columns: 1fr 1.2fr; gap: 10px; margin-top: 24px; }
+.pdf-hero-login .pdf-alert { margin-top: 10px; }
+.pdf-hero-login .pdf-hero-actions { margin: 12px 0 12px; }
 .pdf-illustrative-card { position: relative; overflow: hidden; border: 1px solid #33374a; border-radius: 24px; padding: 26px; background: radial-gradient(500px 360px at 82% 0%, rgba(79, 124, 255, 0.34), transparent 62%), linear-gradient(135deg, #17192b, #11131d 62%, #1a1420); box-shadow: 0 34px 100px rgba(0, 0, 0, 0.42), 0 1px 0 rgba(255,255,255,0.06) inset; }
 .pdf-illustrative-head { display: flex; align-items: center; justify-content: space-between; color: #9ba3c0; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; }
 .pdf-illustrative-number { margin: 6px 0 4px; font-size: clamp(5rem, 10vw, 7.2rem); line-height: 0.9; letter-spacing: -0.09em; font-weight: 900; }
@@ -456,6 +460,7 @@ img, svg { display: block; max-width: 100%; }
   .pdf-illustrative-number { font-size: clamp(4.25rem, 23vw, 6rem); }
   .pdf-hero-actions { flex-direction: column; align-items: stretch; }
   .pdf-hero-actions .pdf-btn { width: 100%; }
+  .pdf-hero-login-fields { grid-template-columns: 1fr; }
   .pdf-card-title-row { align-items: flex-start; flex-direction: column; }
   .pdf-table { min-width: 640px; }
   .pdf-quick-login-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }

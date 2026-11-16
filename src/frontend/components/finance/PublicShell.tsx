@@ -11,7 +11,7 @@ const NAV = [
   { href: "/#features", label: "Features" },
   { href: "/#for-lenders", label: "For lenders" },
   { href: "/#trust", label: "Trust" },
-  { href: "/login", label: "Demo" },
+  { href: "/#quick-login", label: "Demo" },
 ];
 
 const FOOTER_LINKS = [
@@ -70,7 +70,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
           </nav>
           <div className="pdf-public-actions">
             <ThemeButton />
-            <Link href="/login" className="pdf-btn pdf-btn-primary pdf-btn-sm">
+            <Link href="/#quick-login" className="pdf-btn pdf-btn-primary pdf-btn-sm">
               Get started
             </Link>
             <button
